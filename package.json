@@ -1,0 +1,19 @@
+{
+  "name": "proposal-system",
+  "version": "1.0.0",
+  "description": "This is a system for American football team to vote on proposals",
+  "private": false,
+  "author": "Kyaw Zin Thiha",
+  "license": "MIT",
+  "scripts": {
+    "prepare": "husky install"
+  },
+  "devDependencies": {
+    "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
+    "prettier": "^2.8.8"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,scss,md}": "prettier --write"
+  }
+}
