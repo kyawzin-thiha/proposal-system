@@ -1,0 +1,67 @@
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["extendedWhereUnique"]
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum Status {
+  PENDING
+  APPROVED
+  WITHDRAWN
+}
+
+model Account {
+  id        String   @id @default(cuid()) @map("_id")
+  username  String   @unique
+  password  String
+  role      Role     @default(USER)
+  user      User?
+  createdAt DateTime @default(now())
+}
+
+model User {
+  id               String     @id @default(cuid()) @map("_id")
+  name             String
+  accountId        String     @unique
+  account          Account    @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  proposals        Proposal[] @relation(name: "Author-Create-Proposal")
+  comments         Comment[]
+  likedProposalIds String[]
+  likedProposals   Proposal[] @relation(name: "Author-Liked-Proposal", fields: [likedProposalIds], references: [id])
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+}
+
+model Proposal {
+  id          String    @id @default(cuid()) @map("_id")
+  title       String
+  description String
+  status      Status    @default(PENDING)
+  authorId    String
+  author      User      @relation(name: "Author-Create-Proposal", fields: [authorId], references: [id], onDelete: Cascade)
+  likedByIds  String[]
+  likedBy     User[]    @relation(name: "Author-Liked-Proposal", fields: [likedByIds], references: [id])
+  comments    Comment[]
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+model Comment {
+  id         String   @id @default(cuid()) @map("_id")
+  text       String
+  authorId   String
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  proposalId String
+  proposal   Proposal @relation(fields: [proposalId], references: [id], onDelete: Cascade)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+}
