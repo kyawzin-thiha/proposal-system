@@ -2,7 +2,7 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 
 @Injectable()
-export class PermissionGuard implements CanActivate {
+export class RoleGuard implements CanActivate {
     constructor(
         private reflector: Reflector,
     ) { }
